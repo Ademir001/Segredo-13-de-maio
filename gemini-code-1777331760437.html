@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feliz Aniversário! 🎂</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body, html {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+        }
+
+        /* Container principal */
+        #slider {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.8s ease;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Botão de música no topo */
+        #btn-musica {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 1000;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        #btn-musica:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        /* Estilo dos Slides */
+        .slide {
+            display: none;
+            color: white;
+            animation: fadeIn 1s ease-in-out;
+            max-width: 600px;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+        }
+
+        p {
+            font-size: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Slide da Foto (Slide 2) */
+        .photo-container {
+            width: 250px;
+            height: 250px;
+            border: 10px solid white;
+            border-radius: 15px;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: rotate(-3deg);
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .click-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.6);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body onclick="nextSlide(event)">
+
+    <audio id="musica-fundo" loop>
+        <source src="José Feliciano - Feliz Navidad (Official Audio) - José Feliciano (128k).mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="btn-musica" onclick="toggleMusica(event)">🎵</button>
+
+    <div id="slider" style="background-color: #e63946;">
+        
+        <div class="slide active" id="slide-1">
+            <h1>Um dos presentes mais trabalhados que já fiz!</h1>
+            <p>vc sabe o motivo de estar aqui </p>
+        </div>
+
+        <div class="slide" id="slide-2">
+            <div class="photo-container">
+                <img src="Captura de tela 2026-04-27 203430.png" alt="Aniversariante">
+            </div>
+            <h1>Feliz Aniversário!</h1>
+            <p>Nesse dia nasceu esse baú de problemas.</p>
+        </div>
+
+        <div class="slide" id="slide-3">
+            <h1>Falando Sério.</h1>
+            <b>Eu queria fazer algo melhor com mais fotos <br>Mas percebi que não tinha nenhuma nossa um erro que cometi por não tirar fotos. Quero consertar isso o mais rápido possível. Perceber que tudo o que passamos ou vamos passar pode existir apenas na memória. </div>
+
+        <div class="slide" id="slide-4">
+            <h1>Você é uma das luzes que apareceram na minha vida</h1>
+            <p>Difícil saber como seriam esses anos se você não existisse e quanto mais difíceis seriam. É quase impossível imaginar como estaríamos nós dois se eu não tivesse parado para conversar direito com você no 3º ano quando vc estava triste. E pensar que foi na dor que se revelou uma ligação forte entre nós.</p>
+        </div>
+
+        <div class="slide" id="slide-5">
+            <h1>A vida pode ser implacavel e quase impossivel de se aguentar</h1>
+            <p>Mas voce Luana foi uma das pessoas mais preciosas e importantes que conheci meu top 3. Fico feliz em dizer que você existe na minha vida. Vc é um dos motivos para eu viver. Feliz aniversário, você é indescritível ❤️.</p>
+        </div>
+
+    </div>
+
+    <div class="click-hint">Clique na tela para continuar</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 5; 
+        
+        // Novas cores (sem rosa): Vermelho, Laranja, Roxo escuro, Azul Real, Dourado
+        const backgrounds = ["#e63946", "#fb8500", "#3c096c", "#023e8a", "#ffb703"]; 
+        
+        let musicaTocando = false;
+        const musica = document.getElementById("musica-fundo");
+        const btnMusica = document.getElementById("btn-musica");
+
+        function nextSlide(event) {
+            if (!musicaTocando) {
+                musica.play();
+                musicaTocando = true;
+            }
+
+            // Remove o slide atual
+            document.getElementById(`slide-${currentSlide}`).classList.remove('active');
+            
+            // Lógica de loop: Se for o último, volta para o primeiro
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+            } else {
+                currentSlide = 1;
+            }
+            
+            // Ativa o novo slide
+            const next = document.getElementById(`slide-${currentSlide}`);
+            next.classList.add('active');
+
+            // Muda a cor do fundo
+            document.getElementById('slider').style.backgroundColor = backgrounds[currentSlide - 1];
+
+            // Dispara confete apenas no slide 2
+            if (currentSlide === 2) {
+                dispararConfete();
+            }
+        }
+
+        function toggleMusica(event) {
+            event.stopPropagation(); 
+            if (musicaTocando) {
+                musica.pause();
+                btnMusica.innerHTML = "🔇";
+                musicaTocando = false;
+            } else {
+                musica.play();
+                btnMusica.innerHTML = "🎵";
+                musicaTocando = true;
+            }
+        }
+
+        function dispararConfete() {
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                // Cores dos confetes: Branco, Vermelho e Dourado
+                confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ffffff', '#ff0000', '#ffd700'] });
+                confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ffffff', '#ff0000', '#ffd700'] });
+                if (Date.now() < end) { requestAnimationFrame(frame); }
+            }());
+
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ffffff', '#ff0000', '#ffd700'] });
+        }
+    </script>
+</body>
+</html>
